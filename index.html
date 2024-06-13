@@ -1,0 +1,1511 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title>AutoDAN-Turbo</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" media="screen" rel="stylesheet"
+          type="text/css"/>
+    <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css"/>
+    <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css"/>
+    <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css"/>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .menu-index {
+            color: rgb(255, 255, 255) !important;
+            opacity: 1 !important;
+            font-weight: 700 !important;
+        }
+    </style>
+</head>
+
+<body>
+<div class="menu-container"></div>
+<div class="content-container">
+    <!-------------------------------------------------------------------------------------------->
+    <!--Start Header-->
+    <div class="banner"
+         style="background: url('img/pipe.png') no-repeat center; background-size: contain; height: 400px;"></div>
+    <div class="banner">
+        <div class="banner-table flex-column">
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 class="add-top-margin-small">AutoDAN-Turbo: A Lifelong Agent for Strategy Self-Exploration to
+                        Jailbreak LLMs</h2>
+                    <p class="text">
+                        <b>AutoDAN-Turbo</b>, a black-box jailbreak framework that can automatically discover as many
+                        jailbreak
+                        strategies as possible from scratch, without any human intervention or predefined scopes (e.g.
+                        specific candidate strategies).
+                        <br>
+                        In addition, AutoDAN-Turbo is a unified framework that can incorporate existing <a
+                            herf="javascript:void(0)">Human-Designed Jailbreak Strategies</a> in a plug-and-play manner.
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Header-->
+    <!-------------------------------------------------------------------------------------------->
+
+    <div class="content">
+        <div class="content-table flex-column">
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Intro-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <img class="image" src="img/performance_comp.png" , width="500" , height="450">
+                    <p class="image-caption">AutoDAN-Turbo outperforms other black-box baselines in Harmbench. </p>
+                </div>
+                <div class="flex-item flex-column">
+                    <h2><b> The AutoDAN-Turbo Team </b></h2>
+                    <p class="text text-large">
+                        <a target="_blank" href="https://sheltonliu-n.github.io/">Xiaogeng Liu<sup>1*</sup></a>,
+                        xiaogeng.liu@wisc.edu<br>
+                        <a target="_blank" href="https://github.com/PeiranLi0930">Peiran Li<sup>1*</sup></a>,
+                        pli258@wisc.edu<br>
+                        <a target="_blank" href="http://web.cse.ohio-state.edu/~sun.397/index.html">Huan Sun<sup>2</sup></a>,
+                        sun.397@osu.edu<br> <!--TODO: webpage no response-->
+                        <a target="_blank" href="https://aisecure.github.io/">Bo Li<sup>3</sup></a>,
+                        bol@uchicago.edu<br>
+                        <a target="_blank" href="https://xiaocw11.github.io/">Chaowei Xiao<sup>1</sup></a>,
+                        cxiao34@wisc.edu<br>
+                        <!--              <a target="_blank" href="javascript:void(0)">Ins</a><br>-->
+                        <!--              <a target="_blank" href="javascript:void(0)">Organization</a><br>-->
+                        <!--              <a target="_blank" href="javascript:void(0)">Street Address</a><br>-->
+                        <!--              <a target="_blank" href="javascript:void(0)">City, State, Country</a>-->
+                    </p>
+                    <p>
+                        <sup>1</sup>University of Wisconsin-Madison<br>
+                        <sup>2</sup>The Ohio State University<br>
+                        <sup>3</sup>University of Chicago<br>
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <video preload controls autoplay loop muted playsinline class="image">
+                        <source src="vid/Attempts-Strategies.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="image-caption"></p>
+                    <p class="text add-top-margin">
+                        As demonstrated in our video, AutoDAN-Turbo persistently attempts jailbreaking against various
+                        malicious requests. Throughout this ongoing endeavor, it progressively evolves and refines
+                        increasingly complex jailbreak strategies. Remarkably, this entire process is fully
+                        automated, devoid of human intervention.
+                    </p>
+                    <h1>AutoDAN-Turbo</h1>
+                    <ul>
+                        <li><a href="#abstract">Abstract</a></li>
+                        <li><a href="#properties">Outstanding Highlights and Properties</a></li>
+                        <li><a href="#modules">Core Components and Operational Mechanism</a></li>
+                        <ul>
+                            <li><a href="#module_1">Attack Generation and Exploration Module</a></li>
+                            <li><a href="#module_2">Strategy Library Construction Module</a></li>
+                            <li><a href="#module_3">Jailbreak Strategy Retrieval Module</a></li>
+                        </ul>
+
+                        <li><a href="#text-only">Text Only</a></li>
+                        <li><a href="#buttons-and-inputs">Buttons and Inputs</a></li>
+                        <li><a href="#images-and-image-button">Images and Image Button</a></li>
+                        <li><a href="#text-around-image">Text around Image</a></li>
+                        <li><a href="#centered-image-and-table">Centered Image and Table</a></li>
+                        <li><a href="#adaptive-image">Adaptive Image</a></li>
+                        <li><a href="#text-with-images-and-videos">Text with Images and Videos</a></li>
+                        <li><a href="#iframe">Iframe</a></li>
+                        <li><a href="#list-of-projects">List of Projects</a></li>
+                        <li><a href="#gallery">Gallery (responsive size)</a></li>
+                        <li><a href="#masonry">Masonry (responsive size)</a></li>
+                        <li><a href="#survey">Survey</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--End Intro-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text Only-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="abstract">Abstract</h2>
+                    <hr>
+                    <p class="text">
+                        Jailbreak attacks serve as essential red-teaming tools, proactively assessing whether LLMs can
+                        behave responsibly and safely in adversarial environments. Despite diverse strategies (e.g.,
+                        cipher, low-resource language, persuasions, and so on) that have been proposed, they still rely
+                        on human-designed strategies, limiting their scope and effectiveness as a red-teaming tool.
+                        In this paper, we propose <strong><em>AutoDAN-Turbo</em></strong>, a black-box jailbreak
+                        framework that <strong>can
+                        automatically discover as many jailbreak strategies as possible from scratch, without any human
+                        intervention or predefined scopes (e.g., specified candidate strategies)</strong>. As a result,
+                        AutoDAN-Turbo can automatically develop diverse jailbreak attack strategies and significantly
+                        outperform baseline methods, achieving a 74.3% higher average attack success rate on public
+                        benchmarks. Notably, AutoDAN-Turbo achieves an 88.5% success rate on GPT-4-1106-turbo.<br>
+                        In addition, <strong><em>AutoDAN-Turbo</em></strong> is a unified framework that <strong>can
+                        incorporate existing human-designed
+                        jailbreak strategies in a plug-and-play manner.</strong> By integrating these strategies,
+                        AutoDAN-Turbo can
+                        even achieve a higher success rate of 93.4% on GPT-4-1106-turbo.</p>
+
+                    <button class="custom-button-flat pulse-primary text-center"><span><strong>Jailbreak Strategy</strong>:
+                the text information that, when added, leads to a higher jailbreak score</span></button>
+                </div>
+            </div>
+
+
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="properties">Outstanding Highlights and Properties</h2>
+                    <hr>
+                    <p class="text">
+                        <!-- property 1  -->
+                        <button class="custom-button custom-button-primary pulse-primary">Automatic Strategy Discovery
+                        </button>
+                        <br>
+                        AutoDAN-Turbo consistently innovates and evolves effective jailbreak strategies through
+                        relentless
+                        attempts, all without human intervention or reliance on predefined strategies. The system learns
+                        from previously discovered strategies, enhancing its ability to devise even more powerful and
+                        efficient strategies over time. A noteworthy feature of our advanced, fully automated pipeline
+                        is
+                        its capability to automatically convert discovered strategies into a specific data structure.
+                        This
+                        structure is then incorporated into a strategy library, which AutoDAN-Turbo can reference and
+                        utilize in future jailbreak attempts. This system exemplifies the power of autonomous learning
+                        and
+                        adaptation in the pursuit of continual improvement.
+                        <br>
+                        <br>
+                        <!-- property 2  -->
+                        <button class="custom-button custom-button-info pulse-info">External Strategy Compatibility
+                        </button>
+                        <br>
+                        AutoDAN-Turbo is a unified framework equipped with a plug-and-play feature that seamlessly
+                        integrates externally provided strategies into its own strategy library. Intriguingly,
+                        AutoDAN-Turbo not only utilizes these external strategies proficiently but also draws
+                        inspiration
+                        from them, leading to the discovery of novel, robust, and highly efficient jailbreaking methods.
+                        <br>
+                        <br>
+                        <!-- property 3  -->
+                        <button class="custom-button custom-button-danger pulse-danger">Practical Usage</button>
+                        <br>
+                        AutoDAN-Turbo operates as a black-box system, requiring access only to the outputs of the Large
+                        Language Models (LLMs) and does not necessitate any interaction with the underlying LLM
+                        infrastructure.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="modules">Core Components and Operational Mechanism</h2>
+                    <hr>
+                    <a class="image adaptive-image"
+                       style="background-image: url('img/pipe.png'); min-height: 220px;"
+                       href="img/pipe.png" target="_blank"></a>
+                    <p class="image-caption">The pipeline of AutoDAN-Turbo</p>
+
+                    AutoDAN-Turbo contains three components:
+                    <ol>
+                        <li><strong>Attack Generation and Exploration Module</strong></li>
+                        <ul>
+                            <li>generates jailbreak prompt to attack the target LLM by leveraging the strategies
+                                provided by <em>Jailbreak Strategy Retrival Module</em></li>
+                            <li>constructs the attack log for <em>Strategy Library Construction Module</em> to extract
+                                the strategies
+                            </li>
+                        </ul>
+                        <li><strong>Strategy Library Construction Module</strong></li>
+                        <ul>
+                            <li>
+                                extracts strategies from the attack logs generated in <em>Attack Generation and
+                                Exploration Module</em>
+                            </li>
+                            <li>
+                                saves new evolved strategy into the Strategy Library
+                            </li>
+                        </ul>
+
+                        <li><strong>Jailbreak Strategy Retrieval Module</strong></li>
+                        <ul>
+                            <li>
+                                supports the <em>Attack Generation and Exploration Module</em> to retrieve the strategy
+                                from the
+                                strategy library constructed by <em>Strategy Library Construction Module</em> so that
+                                the retrieved
+                                jailbreak strategy can guide the jailbreak prompt generation to attack the victim LLMs.
+                            </li>
+
+                        </ul>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h3 id="module_1">Attack Generation and Exploration Module</h3>
+                    <hr>
+                    Three LLMs are involved in this module: an attacker LLM, a Target LLM (the victim
+                    model we want to jailbreak), and a scorer LLM. Specifically, the attack loop contains the following
+                    steps:
+                    <ol>
+                        <li><strong>Attack Generation</strong>: The attacker LLM receives specific prompts that
+                            describe the malicious request M and encourages the attacker LLM to generate a jailbreak
+                            prompt using specific jailbreak strategies. Then the attacker LLM then generates the
+                            jailbreak prompt P.
+                        </li>
+                        <li><strong>Target Response</strong>: Upon receiving P as input, the target LLM generates a
+                            response R.
+                        </li>
+                        <li><strong>Scorer Evaluation</strong>: The response R is then evaluated by the scorer LLM. This
+                            evaluation determines whether the response meets the malicious goal of the jailbreak attack.
+                            The scorer LLM returns a numerical score S based on predefined criteria: The scores range
+                            from 1, indicating no alignment with malicious intent, to 10, representing full compliance
+                            with harmful directives.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h3 id="module_2">Strategy Library Construction Module</h3>
+                    <hr>
+                    Since the goal of our framework is to automatically construct strategies from scratch, for
+                    efficiency, we design two stage methods:
+                    <ol>
+                        <li><strong>Warm-up Exploration Stage</strong>: In the warm-up exploration stage, each malicious
+                            request undergoes multiple iterations in the Attack Generation and Exploration Module. This
+                            results in an attack log containing the attack prompt, target response, and score for each
+                            iteration. From this log, we extract strategies that led to a score improvement. A
+                            summarizer Large Language Model (LLM) provides a description and concise definition of the
+                            strategy, formatted into a JSON object, which includes the strategy name, definition, and an
+                            example. To organize the strategy library for efficient retrieval, a text embedding model is
+                            used to convert the target response into a key. The value consists of the attack prompt,
+                            next attack prompt, and score differential. This process is repeated with different
+                            malicious requests, adding the key and value to the strategy library.
+                            <a href="blank_">For more details</a>
+                        </li>
+                        <li><strong>Running-time Lifelong Learning Stage</strong>: AutoDAN-Turbo employs a persistent
+                            learning approach at the running stage, following an initial warm-up strategy, to enhance
+                            our strategy library. This involves performing iterative attack loops on a dataset of
+                            multiple malicious requests until a termination condition is met. In each iteration, an
+                            Attack Generation module formulates a new attack strategy based on previous responses, which
+                            can be stored for future use in the strategy library. This process continues until a score
+                            threshold is met or a maximum iteration limit is reached, ensuring efficient and robust
+                            strategy augmentation.
+                            <a href="blank_">For more details</a>
+                        </li>
+                    </ol>
+                    <img class="image" src="img/strategy_lib.png">
+                    <p class="image-caption">Skeleton of the Strategy Library</p>
+                </div>
+            </div>
+
+
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="text-only">Text Only</h2>
+                    <hr>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <p class="text">
+                        Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae
+                        consequatur,
+                        vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto
+                        odio dignissimos
+                        ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas
+                        molestias
+                        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt
+                        mollitia
+                        animi, id est laborum et dolorum fuga.
+                    </p>
+                    <h3>Break Long URL</h3>
+                    <p class="text">
+                        <a class="break-long-url" target="_blank"
+                           href="https://www.google.com/maps/place/Carnegie+Mellon+University/@40.4430576,-79.9431263,17z/data=!4m5!3m4!1s0x8834f21f58679a9f:0x88716b461fc4daf4!8m2!3d40.4428753!4d-79.9430922">https://www.google.com/maps/place/Carnegie+Mellon+University/@40.4430576,-79.9431263,17z/data=!4m5!3m4!1s0x8834f21f58679a9f:0x88716b461fc4daf4!8m2!3d40.4428753!4d-79.9430922</a>
+                    </p>
+                    <h3>Nested List</h3>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, <a target="_blank" href="javascript:void(0)">sit
+                        amet adipiscing sem neque</a> sed ipsum. Nam quam nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                    <ul>
+                        <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+                        <li>Aenean commodo ligula eget dolor.
+                            <ul>
+                                <li>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</li>
+                                <li>In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+                                    <ul>
+                                        <li>Li nov <a target="_blank" href="javascript:void(0)">lingua franca</a>.</li>
+                                        <li>It va esser Occidental.</li>
+                                        <li>Existent Europan lingues.</li>
+                                    </ul>
+                                </li>
+                                <li>Nullam dictum felis eu pede mollis pretium.</li>
+                            </ul>
+                        </li>
+                        <li>Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</li>
+                    </ul>
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                        It va esser tam simplic quam Occidental in fact, it va esser Occidental. A un Angleso it va
+                        semblar un
+                        simplificat Angles, quam un skeptic Cambridge amico dit me.
+                    </p>
+                    <ol class="nested">
+                        <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+                        <li>Aenean commodo ligula eget dolor.
+                            <ol class="nested">
+                                <li>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</li>
+                                <li>In enim justo, <a target="_blank" href="javascript:void(0)">rhoncus ut, imperdiet
+                                    a</a>, venenatis vitae, justo.
+                                    <ol class="nested">
+                                        <li>Li nov lingua franca.</li>
+                                        <li>It va esser Occidental.</li>
+                                        <li>Existent Europan lingues.</li>
+                                    </ol>
+                                </li>
+                                <li>Nullam dictum felis eu pede mollis pretium.</li>
+                            </ol>
+                        </li>
+                        <li>Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</li>
+                    </ol>
+                    <h3>List with Customized Reverse Numbering</h3>
+                    <ol class="publication C-list">
+                        <li>
+                            <p class="text-small-margin">
+                                Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                                ultricies nisi vel
+                                augue. Curabitur ullamcorper ultricies nisi.
+                            </p>
+                        </li>
+                        <li>
+                            <p class="text-small-margin">
+                                Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget
+                                condimentum rhoncus, sem quam semper libero, <a target="_blank"
+                                                                                href="javascript:void(0)">sit amet
+                                adipiscing sem neque sed ipsum</a>. Nam quam nunc, blandit
+                                vel, luctus pulvinar, hendrerit id, lorem.
+                            </p>
+                        </li>
+                        <li>
+                            <p class="text-small-margin">
+                                Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari
+                                quam ti del
+                                coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li
+                                existent Europan lingues.
+                            </p>
+                        </li>
+                    </ol>
+                    <h3>Math Equations</h3>
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                    </p>
+                    <img class="image center"
+                         src="https://latex.codecogs.com/svg.latex?C\cdot(3\sin\theta_1+3\sin\theta_2-\cos\theta_1-\cos\theta_2)"
+                         style="max-width: 300px;">
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                    </p>
+                </div>
+            </div>
+            <!--End Text Only-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Buttons-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="buttons-and-inputs">Buttons and Inputs</h2>
+                    <hr>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <div class="control-group">
+                        <button class="custom-button">Default</button>
+                        <button class="custom-button custom-button-primary">Primary</button>
+                        <button class="custom-button custom-button-danger">Danger</button>
+                        <button class="custom-button custom-button-info">Info</button>
+                        <button class="custom-button" disabled>Disabled</button>
+                        <a class="custom-button" target="_blank"
+                           href="https://github.com/yenchiah/project-website-template" target="_blank">Hyperlink</a>
+                        <button class="custom-button custom-button-primary stretch-on-mobile">Stretch on Mobile</button>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button pulse-black">Pulse</button>
+                        <button class="custom-button custom-button-primary pulse-primary">Pulse</button>
+                        <button class="custom-button custom-button-danger pulse-danger">Pulse</button>
+                        <button class="custom-button custom-button-info pulse-info">Pulse</button>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button-flat"><img src="img/home.png"></button>
+                        <button class="custom-button-flat" disabled><img src="img/home.png"></button>
+                        <button class="custom-button-flat small"><img src="img/home.png"></button>
+                        <button class="custom-button-flat large"><img src="img/home.png"></button>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button-flat"><img src="img/calendar.png"></button>
+                        <button class="custom-button-flat"><img src="img/play.png"></button>
+                        <button class="custom-button-flat"><img src="img/pause.png"></button>
+                        <button class="custom-button-flat"><img src="img/stop.png"></button>
+                        <button class="custom-button-flat"><img src="img/terrain.png"></button>
+                        <button class="custom-button-flat"><img src="img/close.png"></button>
+                        <button class="custom-button-flat"><img src="img/collection.png"></button>
+                        <button class="custom-button-flat"><img src="img/next.png"></button>
+                        <button class="custom-button-flat"><img src="img/back.png"></button>
+                        <button class="custom-button-flat"><img src="img/setting.png"></button>
+                        <button class="custom-button-flat"><img src="img/book.png"></button>
+                        <button class="custom-button-flat"><img src="img/user.png"></button>
+                        <button class="custom-button-flat"><img src="img/share.png"></button>
+                        <a class="custom-button-flat" href="https://github.com/yenchiah/project-website-template"
+                           target="_blank">
+                            <img src="img/link.png">
+                        </a>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button-flat"><img src="img/home.png"><span>Home</span></button>
+                        <button class="custom-button-flat" disabled><img src="img/home.png"><span>Disabled</span>
+                        </button>
+                        <button class="custom-button-flat small"><img src="img/home.png"><span>Small</span></button>
+                        <button class="custom-button-flat large"><img src="img/home.png"><span>Large</span></button>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button-flat"><img src="img/calendar.png"><span>Calendar</span></button>
+                        <button class="custom-button-flat"><img src="img/play.png"><span>Play</span></button>
+                        <button class="custom-button-flat"><img src="img/stop.png"><span>Stop</span></button>
+                        <button class="custom-button-flat"><img src="img/terrain.png"><span>Terrain</span></button>
+                        <button class="custom-button-flat"><img src="img/close.png"><span>Close</span></button>
+                        <button class="custom-button-flat"><img src="img/collection.png"><span>Collection</span>
+                        </button>
+                        <button class="custom-button-flat"><img src="img/next.png"><span>Next</span></button>
+                        <button class="custom-button-flat"><img src="img/back.png"><span>Back</span></button>
+                        <button class="custom-button-flat"><img src="img/setting.png"><span>Setting</span></button>
+                        <button class="custom-button-flat"><img src="img/book.png"><span>Tutorial</span></button>
+                        <button class="custom-button-flat"><img src="img/user.png"><span>User</span></button>
+                        <button class="custom-button-flat"><img src="img/share.png"><span>Share</span></button>
+                        <a class="custom-button-flat" href="https://github.com/yenchiah/project-website-template"
+                           target="_blank">
+                            <img src="img/link.png"><span>Hyperlink</span>
+                        </a>
+                        <button class="custom-button-flat stretch-on-mobile"><img src="img/play.png"><span>Stretch on Mobile</span>
+                        </button>
+                    </div>
+                    <div class="control-group">
+                        <button class="custom-button-flat pulse-black"><img src="img/home.png"><span>Pulse</span>
+                        </button>
+                        <button class="custom-button-flat pulse-primary"><img src="img/home.png"><span>Pulse</span>
+                        </button>
+                        <button class="custom-button-flat pulse-danger"><img src="img/home.png"><span>Pulse</span>
+                        </button>
+                        <button class="custom-button-flat pulse-info"><img src="img/home.png"><span>Pulse</span>
+                        </button>
+                    </div>
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                        It va esser tam simplic quam Occidental in fact, it va esser Occidental. A un Angleso it va
+                        semblar un
+                        simplificat Angles, quam un skeptic Cambridge amico dit me.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row-space-between">
+                <div class="flex-item flex-column">
+                    <p class="text badge-text">Large Badge Caption!</p>
+                </div>
+                <div class="flex-item flex-column">
+                    <div class="control-group">
+                        <a href="javascript:void(0)" target="_blank" class="custom-image-button">
+                            <img src="img/app-store-badge.png" width="150">
+                        </a>
+                        <a href="javascript:void(0)" target="_blank" class="custom-image-button">
+                            <img src="img/google-play-badge.png" width="150">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <div class="control-group">
+                        <input class="custom-textbox stretch-on-mobile" type="text" placeholder="e.g., 15213">
+                        <textarea class="custom-textbox stretch-on-mobile" placeholder="e.g., 15213"></textarea>
+                    </div>
+                    <div class="control-group">
+                        <input class="custom-textbox stretch-on-mobile" value="https://yenchiah.me/" type="text"
+                               readonly>
+                        <textarea class="custom-textbox stretch-on-mobile" readonly>Phasellus viverra nulla ut metus varius laoreet.</textarea>
+                    </div>
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                        It va esser tam simplic quam Occidental in fact, it va esser Occidental. A un Angleso it va
+                        semblar un
+                        simplificat Angles, quam un skeptic Cambridge amico dit me.
+                    </p>
+                </div>
+            </div>
+            <!--End Text with Buttons-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Images and Image buttons-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="images-and-image-button">Images and Image Button</h2>
+                    <hr>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row-space-between">
+                <div class="flex-item flex-column">
+                    <img class="image max-width-400" src="img/dummay-img.png">
+                    <p class="image-caption">Image Caption</p>
+                </div>
+                <div class="flex-item flex-column">
+                    <a href="https://github.com/yenchiah/project-website-template" target="_blank"
+                       class="image max-width-400">
+                        <img src="img/dummay-img.png">
+                    </a>
+                    <p class="image-caption">Image Button Caption</p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                </div>
+            </div>
+            <!--End Text with Images and Image buttons-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text around Image-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="text-around-image">Text around Image</h2>
+                    <hr>
+                    <p class="text">
+                        <img class="image image-wrap-text max-width-400" src="img/dummay-img.png">
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                        laudantium, totam rem
+                        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                        explicabo.
+                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                        consequuntur magni
+                        dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+                        quia dolor sit
+                        amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et
+                        dolore magnam
+                        aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
+                        suscipit
+                        laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui
+                        in ea
+                        voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo
+                        voluptas nulla
+                        pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
+                        voluptatum
+                        deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non
+                        provident,
+                        similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et
+                        harum quidem
+                        rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi
+                        optio cumque nihil
+                        impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis.
+                    </p>
+                </div>
+            </div>
+            <!--End Text around Image-->
+            <!-------------------------------------------------------------------------------------------->
+        </div>
+    </div>
+    <div class="banner"
+         style="background: url('img/dummy-background.jpeg') no-repeat center; background-size: cover; height: 500px;">
+        <div class="banner-table flex-column" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 class="add-top-margin-small">This is the banner area with photo</h2>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur <a href="javascript:void(0)">ullamcorper ultricies nisi</a>. Nam eget dui.
+                        Etiam rhoncus. Maecenas tempus, tellus eget
+                        condimentum rhoncus.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="content-table flex-column">
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Centered Image and Table-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="centered-image-and-table" class="no-top-margin">Centered Image and Table</h2>
+                    <hr>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <p class="text text-center graph-title">
+                        This image does not scroll and only scale.
+                    </p>
+                    <img class="image center max-width-400 add-top-margin-small" src="img/dummay-img.png">
+                    <p class="text text-center graph-title">
+                        This image scrolls on mobile with a fixed height.
+                    </p>
+                    <div class="scrollable-image-container center add-top-margin-small">
+                        <img class="scrollable-image center" src="img/dummay-img.png">
+                    </div>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <p class="text text-center graph-title">
+                        This is the title for the bottom scrollable table.
+                    </p>
+                    <div class="custom-table-container center add-top-margin-small">
+                        <table class="custom-table">
+                            <thead>
+                            <tr class="bg-color-gray">
+                                <th>Number of</th>
+                                <th class="text-center">Unique Users</th>
+                                <th class="text-center">Smell Reports</th>
+                                <th class="text-center">Interaction Events</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Enthusiasts</td>
+                                <td class="text-center">9.4%</td>
+                                <td class="text-center">50.6%</td>
+                                <td class="text-center">44.8%</td>
+                            </tr>
+                            <tr class="bg-color-light-gray">
+                                <td>Explorers</td>
+                                <td class="text-center">36.1%</td>
+                                <td class="text-center">37.3%</td>
+                                <td class="text-center">27.3%</td>
+                            </tr>
+                            <tr>
+                                <td>Contributors</td>
+                                <td class="text-center">13.0%</td>
+                                <td class="text-center">12.1%</td>
+                                <td class="text-center">n/a</td>
+                            </tr>
+                            <tr class="bg-color-light-gray">
+                                <td>Observers</td>
+                                <td class="text-center">41.6%</td>
+                                <td class="text-center">n/a</td>
+                                <td class="text-center">27.9%</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td>Size (N)</td>
+                                <td class="text-center">2,237</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">79,447</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <p class="text text-center graph-title">
+                        This is the title for the bottom very long scrollable table.
+                    </p>
+                    <div class="custom-table-container center add-top-margin-small">
+                        <table class="custom-table">
+                            <thead>
+                            <tr class="bg-color-gray">
+                                <th class="text-center">Smell Rating</th>
+                                <th class="text-center">2019</th>
+                                <th class="text-center">2018</th>
+                                <th class="text-center">2017</th>
+                                <th class="text-center">2016</th>
+                                <th class="text-center">2015</th>
+                                <th class="text-center">2014</th>
+                                <th class="text-center">2013</th>
+                                <th class="text-center">2012</th>
+                                <th class="text-center">2011</th>
+                                <th class="text-center">2010</th>
+                                <th class="text-center">2009</th>
+                                <th class="text-center">2008</th>
+                                <th class="text-center">2007</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="text-center">1</td>
+                                <td class="text-center">1,711 (9.5%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                                <td class="text-center">1,199 (13.0%)</td>
+                                <td class="text-center">1,658 (20.4%)</td>
+                            </tr>
+                            <tr class="bg-color-light-gray">
+                                <td class="text-center">2</td>
+                                <td class="text-center">798 (4.4%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                                <td class="text-center">497 (5.4%)</td>
+                                <td class="text-center">665 (8.2%)</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">3</td>
+                                <td class="text-center">4,305 (23.9%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                                <td class="text-center">2,649 (28.8%)</td>
+                                <td class="text-center">2,246 (27.7%)</td>
+                            </tr>
+                            <tr class="bg-color-light-gray">
+                                <td class="text-center">4</td>
+                                <td class="text-center">5,804 (32.3%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                                <td class="text-center">2,932 (31.9%)</td>
+                                <td class="text-center">2,171 (26.8%)</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">5</td>
+                                <td class="text-center">5,356 (29.8%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                                <td class="text-center">1,918 (20.9%)</td>
+                                <td class="text-center">1,372 (16.9%)</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td class="text-center">Sum</td>
+                                <td class="text-center">17,974</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                                <td class="text-center">9,195</td>
+                                <td class="text-center">8,112</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                </div>
+            </div>
+            <!--End Text with Centered Image and Table-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Adaptive Image-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="adaptive-image">Adaptive Image</h2>
+                    <hr>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                    <a class="image adaptive-image"
+                       style="background-image: url('img/dummay-img-long.png'); min-height: 150px;"
+                       href="img/dummay-img-long.png" target="_blank"></a>
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                </div>
+            </div>
+            <!--End Text with Adaptive Image-->
+            <!-------------------------------------------------------------------------------------------->
+        </div>
+    </div>
+    <div class="banner"
+         style="background: url('img/dummy-background.jpeg') no-repeat center; background-size: cover; height: 500px;"></div>
+    <div class="banner">
+        <div class="banner-table flex-column">
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 class="add-top-margin-small">This is the two banner area with photo</h2>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="content-table flex-column">
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Images and Videos-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="text-with-images-and-videos" class="no-top-margin">Text with Images and Videos</h2>
+                    <hr>
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                        It va esser tam simplic quam Occidental in fact, it va esser Occidental. A un Angleso it va
+                        semblar un
+                        simplificat Angles, quam un skeptic Cambridge amico dit me.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <img class="image" src="img/dummay-img.png">
+                </div>
+                <div class="flex-item flex-item-stretch flex-column">
+                    <p class="text">
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                        laudantium, totam rem
+                        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                        explicabo.
+                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                        consequuntur magni
+                        dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+                        quia dolor
+                        sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore
+                        et dolore
+                        magnam aliquam quaerat voluptatem. Sed ut perspiciatis unde.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <video preload controls autoplay loop muted playsinline class="image">
+                        <source src="vid/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="flex-item flex-item-stretch flex-column">
+                    <p class="text">
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                        laudantium, totam rem
+                        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                        explicabo.
+                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                        consequuntur magni
+                        dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+                        quia dolor
+                        sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore
+                        et dolore
+                        magnam.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti
+                        del
+                        coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent
+                        Europan lingues.
+                        It va esser tam simplic quam Occidental in fact, it va esser Occidental. A un Angleso it va
+                        semblar un
+                        simplificat Angles, quam un skeptic Cambridge amico dit me.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch-2 flex-column">
+                    <p class="text">
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                        laudantium, totam rem
+                        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                        explicabo.
+                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                        consequuntur magni
+                        dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+                        quia dolor
+                        sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.
+                    </p>
+                </div>
+                <div class="flex-item flex-item-stretch flex-column">
+                    <img class="image" src="img/dummay-img.png">
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch-2 flex-column">
+                    <p class="text">
+                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                        laudantium, totam rem
+                        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+                        explicabo.
+                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                        consequuntur magni
+                        dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+                        quia dolor
+                        sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.
+                    </p>
+                </div>
+                <div class="flex-item flex-item-stretch flex-column">
+                    <video preload controls autoplay loop muted playsinline class="image">
+                        <source src="vid/mov_bbb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <p class="text">
+                        Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie,
+                        musica,
+                        sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li
+                        pronunciation e
+                        li plu commun vocabules. Omnicos directe al desirabilite de un nov lingua franca: On refusa
+                        continuar payar
+                        custosi traductores. At solmen va esser.
+                    </p>
+                </div>
+            </div>
+            <!--End Text with Images and Videos-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Text with Iframe-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="iframe">Iframe</h2>
+                    <hr>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                    <iframe class="iframe-in-body" src="https://yenchiah.me/geo-heatmap/smell.html"></iframe>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <!--END Text with Iframe-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start List of Projects-->
+            <div class="flex-row">
+                <div class="flex-item flex-column full-width">
+                    <h2 id="list-of-projects">List of Projects</h2>
+                    <hr>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <img class="image max-width-400" src="img/dummay-img.png">
+                </div>
+                <div class="flex-item flex-item-stretch-4 flex-column">
+                    <p class="text">
+                        <a class="highlight-text" href="javascript:void(0)">Li Europan Lingues es Membres Del Sam
+                            Familie</a><br>
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <img class="image max-width-400" src="img/dummay-img.png">
+                </div>
+                <div class="flex-item flex-item-stretch-4 flex-column">
+                    <p class="text">
+                        <a class="highlight-text" href="javascript:void(0)">Li Europan Lingues es Membres Del Sam
+                            Familie</a><br>
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet.
+                    </p>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <img class="image max-width-400" src="img/dummay-img.png">
+                </div>
+                <div class="flex-item flex-item-stretch-4 flex-column">
+                    <p class="text">
+                        <a class="highlight-text" href="javascript:void(0)">Li Europan Lingues es Membres Del Sam
+                            Familie</a><br>
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet.
+                    </p>
+                </div>
+            </div>
+            <!--End List of Projects-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Gallery-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="gallery">Gallery (responsive size)</h2>
+                    <hr>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <div class="gallery add-top-margin-small add-bottom-margin-small">
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+                <a href="javascript:void(0)" class="flex-column"><img src="img/dummay-img.png">
+                    <div>Image Caption</div>
+                </a>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <div class="gallery add-top-margin-small add-bottom-margin-small">
+                <div class="flex-column">
+                    <img src="img/dummay-img.png">
+                    <h3>Phasellus Viverra</h3>
+                    <div>Quisque Rutrum</div>
+                    <div>
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">Website</a>
+                        &nbsp;|&nbsp;
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">LinkedIn</a>
+                    </div>
+                </div>
+                <div class="flex-column">
+                    <img src="img/dummay-img.png">
+                    <h3>Phasellus Viverra</h3>
+                    <div>Quisque Rutrum</div>
+                    <div>
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">Website</a>
+                        &nbsp;|&nbsp;
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">LinkedIn</a>
+                    </div>
+                </div>
+                <div class="flex-column">
+                    <img src="img/dummay-img.png">
+                    <h3>Phasellus Viverra</h3>
+                    <div>Quisque Rutrum</div>
+                    <div>
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">Website</a>
+                        &nbsp;|&nbsp;
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">LinkedIn</a>
+                    </div>
+                </div>
+                <div class="flex-column">
+                    <img src="img/dummay-img.png">
+                    <h3>Phasellus Viverra</h3>
+                    <div>Quisque Rutrum</div>
+                    <div>
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">Website</a>
+                        &nbsp;|&nbsp;
+                        <a href="https://yenchiah.me/project-website-template/" target="_blank">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <!--End Gallery-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Masonry-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="masonry">Masonry (responsive size)</h2>
+                    <hr>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <div class="masonry add-top-margin-small add-bottom-margin-small">
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1485182708500-e8f1f318ba72?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1820&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@heftiba" target="_blank">Toa Heftiba</a></div>
+                    <figcaption>Phasellus viverra nulla!</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1590727264967-f26b2d31e3a1?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=792&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@markusspiske" target="_blank">Markus Spiske</a></div>
+                    <figcaption>Nam eget dui, etiam rhoncus, maecenas tempus</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1740&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@priscilladupreez" target="_blank">Priscilla Du Preez</a>
+                    </div>
+                    <figcaption>Nam quam nunc, blandit vel, luctus pulvinar!!!</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1558023784-f8343393cb06?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=870&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@frankielopez" target="_blank">Frankie Lopez</a></div>
+                    <figcaption>Pellentesque habitant morbi!</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1629036747901-6cad3758cd92?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=772&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@zhugher" target="_blank">he zhu</a></div>
+                    <figcaption>Phasellus blandit leo ut odio.</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1477238134895-98438ad85c30?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2600&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@cant89" target="_blank">Davide Cantelli</a></div>
+                    <figcaption>Vestibulum ante ipsum primis</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1613946069412-38f7f1ff0b65?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=870&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@simonkaremann" target="_blank">Simon Karemann</a></div>
+                    <figcaption>Aenean tellus metus, bibendum sed, posuere ac, mattis.</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1740&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@adrienolichon" target="_blank">Adrien Olichon</a></div>
+                    <figcaption>Nunc nonummy metus vestibulum volutpat.</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1594788094620-4579ad50c7fe?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1742&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@mohammadshahhosseini" target="_blank">Mohammad
+                        Shahhosseini</a></div>
+                    <figcaption>Sed fringilla mauris sit amet nibh.</figcaption>
+                </figure>
+                <figure>
+                    <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1548&amp;q=80">
+                    <div>Credit: <a href="https://unsplash.com/@domlafou" target="_blank">Dom Fou</a></div>
+                    <figcaption>Vestibulum purus quam, scelerisque ut.</figcaption>
+                </figure>
+            </div>
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <!--End Masonry-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Survey-->
+            <div class="flex-row">
+                <div class="flex-item flex-column">
+                    <h2 id="survey">Survey</h2>
+                    <hr>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                    <div class="custom-survey add-top-margin add-bottom-margin">
+                        <span class="text">1. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.</span>
+                        <div class="custom-radio-group-survey add-top-margin">
+                            <div><input type="radio" name="scenario-question-sq-1508-scale" value="2596"
+                                        id="scenario-question-sq-1508-item-0"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1508-item-0">Strongly
+                                Agree</label></div>
+                            <div><input type="radio" name="scenario-question-sq-1508-scale" value="2597"
+                                        id="scenario-question-sq-1508-item-1"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1508-item-1">Agree</label>
+                            </div>
+                            <div><input type="radio" name="scenario-question-sq-1508-scale" value="2598"
+                                        id="scenario-question-sq-1508-item-2"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1508-item-2">Neutral</label>
+                            </div>
+                            <div><input type="radio" name="scenario-question-sq-1508-scale" value="2599"
+                                        id="scenario-question-sq-1508-item-3"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1508-item-3">Disagree</label>
+                            </div>
+                            <div><input type="radio" name="scenario-question-sq-1508-scale" value="2600"
+                                        id="scenario-question-sq-1508-item-4"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1508-item-4">Strongly
+                                Disagree</label></div>
+                        </div>
+                    </div>
+                    <div class="custom-survey add-top-margin add-bottom-margin">
+                        <span class="text">2. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.</span>
+                        <div class="custom-radio-group-survey add-top-margin">
+                            <div><input type="checkbox" name="scenario-question-sq-1508-scale" value="2596"
+                                        id="scenario-question-sq-1510-item-0"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1510-item-0">Strongly
+                                Agree</label></div>
+                            <div><input type="checkbox" name="scenario-question-sq-1508-scale" value="2597"
+                                        id="scenario-question-sq-1510-item-1"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1510-item-1">Agree</label>
+                            </div>
+                            <div><input type="checkbox" name="scenario-question-sq-1508-scale" value="2598"
+                                        id="scenario-question-sq-1510-item-2"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1510-item-2">Neutral</label>
+                            </div>
+                            <div><input type="checkbox" name="scenario-question-sq-1508-scale" value="2599"
+                                        id="scenario-question-sq-1510-item-3"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1510-item-3">Disagree</label>
+                            </div>
+                            <div><input type="checkbox" name="scenario-question-sq-1508-scale" value="2600"
+                                        id="scenario-question-sq-1510-item-4"> <label class="break-long-url"
+                                                                                      for="scenario-question-sq-1510-item-4">Strongly
+                                Disagree</label></div>
+                        </div>
+                    </div>
+                    <div class="custom-survey add-top-margin add-bottom-margin">
+                        <span class="text">3. Do you have any comments for this study?</span>
+                        <textarea class="custom-textbox-survey add-top-margin" placeholder="(max 500 characters)"
+                                  maxlength="500"></textarea>
+                    </div>
+                    <div class="custom-survey add-top-margin add-bottom-margin">
+                        <span class="text">4. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.</span>
+                        <div class="custom-radio-group-survey image-only add-top-margin">
+                            <div><input type="checkbox" name="scenario-question-sq-1545-scale" value="2720"
+                                        id="scenario-question-sq-1545-item-2"><label
+                                    for="scenario-question-sq-1545-item-2">
+                                <figure><img
+                                        src="https://images.unsplash.com/photo-1597914377769-db5167cb0221?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=774&amp;q=80">
+                                    <div>Credit: Justus Menke</div>
+                                    <figcaption>Phasellus viverra nulla ut metus varius laoreet.</figcaption>
+                                </figure>
+                            </label></div>
+                            <div><input type="checkbox" name="scenario-question-sq-1545-scale" value="2726"
+                                        id="scenario-question-sq-1545-item-4"><label
+                                    for="scenario-question-sq-1545-item-4">
+                                <figure><img
+                                        src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2874&amp;q=80">
+                                    <div>Credit: Chris Montgomery</div>
+                                    <figcaption>Nam eget dui. Etiam rhoncus</figcaption>
+                                </figure>
+                            </label></div>
+                            <div><input type="checkbox" name="scenario-question-sq-1545-scale" value="2721"
+                                        id="scenario-question-sq-1545-item-5"><label
+                                    for="scenario-question-sq-1545-item-5">
+                                <figure><img
+                                        src="https://images.unsplash.com/photo-1506485338023-6ce5f36692df?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1740&amp;q=80">
+                                    <div>Credit: Jazmin Quaynor</div>
+                                    <figcaption>Etiam ultricies nisi vel augue.</figcaption>
+                                </figure>
+                            </label></div>
+                        </div>
+                    </div>
+                    <p class="text">
+                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam
+                        ultricies nisi vel
+                        augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                        tellus eget
+                        condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam
+                        nunc, blandit
+                        vel, luctus pulvinar, hendrerit id, lorem.
+                    </p>
+                </div>
+            </div>
+            <!--End Survey-->
+            <!-------------------------------------------------------------------------------------------->
+            <!--Start Credits-->
+            <div class="flex-row">
+                <div class="flex-item flex-item-stretch flex-column">
+                    <p class="text text-small text-italic add-top-margin-large">
+                        Credits: <span class="highlight-text">Organization One</span>: Author One and Author Two / <span
+                            class="highlight-text">Organization Two</span>: Author Three and Author Four
+                    </p>
+                </div>
+            </div>
+            <!--End Credits-->
+            <!-------------------------------------------------------------------------------------------->
+        </div>
+    </div>
+    <div class="footer-container"></div>
+</div>
+</body>
+
+</html>
